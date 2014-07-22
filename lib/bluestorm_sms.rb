@@ -2,9 +2,12 @@ require 'bluestorm_sms/version'
 require 'bluestorm_sms/configuration'
 require 'net/http'
 require 'digest'
+require 'iconv'
+require 'time'
 
 module BluestormSMS
   extend self
+  #config
   attr_writer :config
 
   def config
@@ -29,6 +32,20 @@ module BluestormSMS
     else
       {error: result.body}
     end
+  end
+
+  #get sms
+  def get messages
+    arr = messages.split(';').collect {|x| x.split(',')}
+    results = []
+    arr.each do |m|
+      message = Hash.new
+      message[:from] = m[2]
+      message[:content] = Iconv.conv('utf-8', 'gb2312', (URI.unescape m[3]) )
+      message[:time] = Time.parse m[4]
+      results << message
+    end
+    results
   end
 
 end

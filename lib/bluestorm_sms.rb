@@ -36,12 +36,13 @@ module BluestormSMS
 
   #get sms
   def get messages
+    messages = Iconv.conv('utf-8', 'gb2312', messages)
     arr = messages.split(';').collect {|x| x.split(',')}
     results = []
     arr.each do |m|
       message = Hash.new
       message[:from] = m[2]
-      message[:content] = Iconv.conv('utf-8', 'gb2312', (URI.unescape m[3]) )
+      message[:content] = m[3]
       message[:time] = Time.parse m[4]
       results << message
     end

@@ -25,8 +25,8 @@ module BluestormSMS
     Digest::MD5.hexdigest(@config.sn + @config.pwd).upcase
   end
 
-  def send(phone, content)
-    result = Net::HTTP.post_form(URI.parse("#{URL}"), sn: @config.sn, pwd: self.pwd, mobile: phone, content: content)
+  def send(phone, content, ext = 0)
+    result = Net::HTTP.post_form(URI.parse("#{URL}"), sn: @config.sn, pwd: self.pwd, mobile: phone, content: content, ext: ext)
     if result.body.match '^\d{18}$'
       {success: result.body}
     else

@@ -26,7 +26,9 @@ module BluestormSMS
   end
 
   def send(phone, content, ext = 0)
-    result = Net::HTTP.post_form(URI.parse("#{URL}"), sn: @config.sn, pwd: self.pwd, mobile: phone, content: content, ext: ext)
+    post_config = { sn: @config.sn, pwd: self.pwd, mobile: phone, content: content }
+    post_config.merge!({ ext: ext }) if ext != 0
+    result = Net::HTTP.post_form(URI.parse("#{URL}"), post_config)
     if result.body.match '^\d{18}$'
       {success: result.body}
     else
